@@ -1,26 +1,32 @@
 import { useState } from 'react'
+import Header from './components/Header'
+import EvalForm from './components/EvalForm'
+import ResultCard from './components/ResultCard'
+import HistoryList from './components/HistoryList'
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [result, setResult] = useState(null)
+  const [history, setHistory] = useState([])
+
+  const handleResult = (res) => {
+    setResult(res)
+    setHistory((h) => [
+      {
+        id: res.id,
+        agent_card_url: res.agent_card_url, // may be undefined from API; keep slot
+      },
+      ...h,
+    ].slice(0, 5))
+  }
 
   return (
-    <div className="min-h-screen bg-gradient-to-br from-purple-50 to-blue-50 flex items-center justify-center">
-      <div className="bg-white p-8 rounded-lg shadow-lg">
-        <h1 className="text-3xl font-bold text-gray-800 mb-4">
-          Vibe Coding Platform
-        </h1>
-        <p className="text-gray-600 mb-6">
-          Your AI-powered development environment
-        </p>
-        <div className="text-center">
-          <button
-            onClick={() => setCount(count + 1)}
-            className="bg-blue-500 hover:bg-blue-600 text-white font-semibold py-2 px-4 rounded"
-          >
-            Count is {count}
-          </button>
-        </div>
-      </div>
+    <div className="min-h-screen bg-gradient-to-br from-slate-50 to-indigo-50">
+      <Header />
+      <main className="max-w-5xl mx-auto px-6 pb-20 grid gap-6">
+        <EvalForm onResult={handleResult} />
+        <ResultCard result={result} />
+        <HistoryList items={history} />
+      </main>
     </div>
   )
 }
